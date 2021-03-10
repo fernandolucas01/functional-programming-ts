@@ -1,6 +1,15 @@
 import * as fs from "fs";
 import * as path from "path";
 
+function composition(...fns: Function[]) {
+  return (valor) =>  fns.reduce(async (acc, fn) => {
+    if (acc instanceof Promise)
+      return fn(await acc);
+    else
+      return fn(acc);
+  }, valor);
+}
+
 function readDirectory(dirPath: string): Promise<string[]> {
   return new Promise((resolve, reject) => {
     try {
@@ -82,6 +91,7 @@ function saveJSON(fileName: string) {
 }
 
 export {
+  composition,
   readDirectory,
   wordsEndingWith,
   readFiles,
